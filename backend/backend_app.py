@@ -41,6 +41,17 @@ def handle_posts():
         return jsonify(new_post), 201
 
 
+@app.route('/api/posts/<int:id>', methods = ['PUT'])
+def update_posts(id):
+    post = find_post_by_id(id)
+    if post is not None:
+        new_data = request.get_json()
+        post.update(new_data)
+        return jsonify(post)
+    else:
+        return '', 404
+
+
 def validate_post_data(data):
     return 'title' in data and 'content' in data
 
