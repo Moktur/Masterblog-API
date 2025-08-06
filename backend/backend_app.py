@@ -6,17 +6,17 @@ app = Flask(__name__)
 CORS(app)  # This will enable CORS for all routes
 
 POSTS = [
-    # {"id": 1, "title": "First post",
-    #     "content": "This is the first post."},
-    # {"id": 2, "title": "Second post",
-    #     "content": "This is the second post."},
-    # {"id": 3, "title": "The Power of AI",
-    #     "content": "Exploring how artificial \
-    #     intelligence is transforming industries."},
-    # {"id": 4, "title": "Web Development Trends",
-    #     "content": "Latest trends in web development for 2023."},
-    # {"id": 5, "title": "Healthy Living",
-    #     "content": "Tips and tricks for lifestyle."}
+    {"id": 1, "title": "First post",
+        "content": "This is the first post."},
+    {"id": 2, "title": "Second post",
+        "content": "This is the second post."},
+    {"id": 3, "title": "The Power of AI",
+        "content": "Exploring how artificial \
+        intelligence is transforming industries."},
+    {"id": 4, "title": "Web Development Trends",
+        "content": "Latest trends in web development for 2023."},
+    {"id": 5, "title": "Healthy Living",
+        "content": "Tips and tricks for lifestyle."}
 ]
 
 
