@@ -1,3 +1,4 @@
+"""modules providing functions to generate websites"""
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
@@ -5,31 +6,17 @@ app = Flask(__name__)
 CORS(app)  # This will enable CORS for all routes
 
 POSTS = [
-    {"id": 1, "title": "First post",
-        "content": "This is the first post."},
-    {"id": 2, "title": "Second post",
-        "content": "This is the second post."},
-    {"id": 3, "title": "The Power of AI",
-        "content": "Exploring how artificial \
-        intelligence is transforming industries."},
-    {"id": 4, "title": "Web Development Trends",
-        "content": "Latest trends in web development for 2023."},
-    {"id": 5, "title": "Healthy Living",
-        "content": "Tips and tricks for maintaining a healthy lifestyle."},
-    {"id": 6, "title": "Travel Guide",
-        "content": "Top travel destinations you should visit this year."},
-    {"id": 7, "title": "Cooking Recipes",
-        "content": "Delicious and easy-to-make recipes for beginners."},
-    {"id": 8, "title": "Financial Freedom",
-        "content": "How to achieve financial independence in 10 years."},
-    {"id": 9, "title": "Fitness Routine",
-        "content": "Best workout routines for building muscle at home."},
-    {"id": 10, "title": "Book Reviews",
-        "content": "Must-read books for personal and professional growth."},
-    {"id": 11, "title": "Tech Gadgets",
-        "content": "Coolest tech gadgets released this year."},
-    {"id": 12, "title": "Environmental Awareness",
-        "content": "How you can contribute to saving the planet."}
+    # {"id": 1, "title": "First post",
+    #     "content": "This is the first post."},
+    # {"id": 2, "title": "Second post",
+    #     "content": "This is the second post."},
+    # {"id": 3, "title": "The Power of AI",
+    #     "content": "Exploring how artificial \
+    #     intelligence is transforming industries."},
+    # {"id": 4, "title": "Web Development Trends",
+    #     "content": "Latest trends in web development for 2023."},
+    # {"id": 5, "title": "Healthy Living",
+    #     "content": "Tips and tricks for lifestyle."}
 ]
 
 
@@ -63,18 +50,18 @@ def get_posts():
         return jsonify({"error": "Sorting failed", "details": str(e)}), 500
 
 
-@app.route('/api/posts/<int:id>', methods=['DELETE'])
-def delete_post_by_id(id):
+@app.route('/api/posts/<int:post_id>', methods=['DELETE'])
+def delete_post_by_id(post_id):
     """
     Deletes a post if found by id.
     Returns the deleted post.
     """
-    if request.method == 'DELETE':
-        post = find_post_by_id(id)
-        if post is None:
-            return '', 404
-        POSTS.remove(post)
-        return jsonify(post)
+    post = find_post_by_id(post_id)
+    if post is None:
+        return jsonify({"error": f"Post with ID {post_id} not found"}), 404
+
+    POSTS.remove(post)
+    return jsonify(post)
 
 
 @app.route('/api/posts', methods=['POST'])
@@ -87,28 +74,31 @@ def handle_posts():
         new_post = request.get_json()
         if not validate_post_data(new_post):
             return jsonify({"error": "Invalid post data"}), 400
-        # generate post ID
-        new_id = max(post['id'] for post in POSTS) + 1
+
+        # if list of blogs is empty, new id will be 1
+        if not POSTS:
+            new_id = 1
+        else:
+            new_id = max(post['id'] for post in POSTS) + 1
+
         new_post['id'] = new_id
-        # Add the new post
         POSTS.append(new_post)
-        # return the new post to the client
         return jsonify(new_post), 201
 
 
-@app.route('/api/posts/<int:id>', methods=['PUT'])
-def update_posts(id):
+@app.route('/api/posts/<int:post_id>', methods=['PUT'])
+def update_posts(post_id):
     """
     Update the title or content of a post if ID is provided.
     Returns the updated post.
     """
-    post = find_post_by_id(id)
-    if post is not None:
-        new_data = request.get_json()
-        post.update(new_data)
-        return jsonify(post)
-    else:
-        return '', 404
+    post = find_post_by_id(post_id)
+    if post is None:
+        return jsonify({"error": f"Post with ID {post_id} not found"}), 404
+
+    new_data = request.get_json()
+    post.update(new_data)
+    return jsonify(post)
 
 
 @app.route('/api/posts/search', methods=['GET'])
